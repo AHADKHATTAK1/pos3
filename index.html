@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="db.js"></script>
+    <script src="api.js"></script>
+    <script src="barcode-scanner.js"></script>
+</head>
+
+<body>
+    <script>
+        // Check if user is logged in
+        const userSession = sessionStorage.getItem('userSession');
+        if (!userSession) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 id="posTitle">📦 AL DAR POS</h1>
+                    <div class="header-subtitle">Professional Inventory & Sales System</div>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <div class="user-avatar">👤</div>
+                        <div class="user-details">
+                            <span id="userDisplay" class="user-name">Admin User</span>
+                            <span class="user-role">System Administrator</span>
+                        </div>
+                        <button onclick="logout()" class="btn-logout-icon" title="Logout">🚪</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <div class="main-grid">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sidebar-content">
+                        <h3>Navigation</h3>
+                        <button onclick="showOverviewPage()" class="nav-btn active">📊 Overview</button>
+                        <button onclick="showPOSPage()" class="nav-btn">🛒 POS</button>
+                        <button onclick="showInventoryPage()" class="nav-btn">📦 Inventory</button>
+                        <button onclick="showCustomersPage()" class="nav-btn">👥 Customers</button>
+                        <button onclick="showSettingsPage()" class="nav-btn">⚙️ Settings</button>
+                        <hr>
+                        <h4>Quick Actions</h4>
+                        <button onclick="showScanCamera()" class="nav-btn secondary">📷 Scan</button>
+                        <button onclick="showAddProductForm()" class="nav-btn secondary">➕ Add Product</button>
+                        <button onclick="showQuickAddForm()" class="nav-btn secondary">⚡ Quick Add</button>
+                        <hr>
+                        <h4>Tools</h4>
+                        <button onclick="showInventorySheetModal()" class="nav-btn secondary">📋 Upload Sheet</button>
+                        <button onclick="document.getElementById('csvImport').click()" class="nav-btn secondary">📁
+                            Import CSV</button>
+                        <input type="file" id="csvImport" accept=".csv,.xlsx,.xls,.xlsm,.xlsb"
+                            onchange="importInventoryFile(event)" class="file-input-hidden"
+                            aria-label="Import CSV File">
+                        <button onclick="exportToCSV()" class="nav-btn secondary">💾 Export CSV</button>
+                        <button onclick="showPOSSettings()" class="nav-btn secondary">🛠️ POS Settings</button>
+                        <button onclick="showBackendConfig()" class="nav-btn secondary">⚙️ Backend</button>
+                    </div>
+                </aside>
+
+                <!-- Content Area -->
+                <section class="content">
+                    <!-- Overview Page -->
+                    <div id="overviewPage" class="page active">
+                        <div class="page-header-pro">
+                            <div class="header-title-group">
+                                <h2>📊 Dashboard Overview</h2>
+                                <p>Real-time analytics and store performance at a glance.</p>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-grid">
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <h3>Weekly Sales Revenue</h3>
+                                    <span class="chart-period">Last 7 Days</span>
+                                </div>
+                                <canvas id="salesChart"></canvas>
+                            </div>
+
+                            <div class="recent-activity">
+                                <div class="activity-header">
+                                    <h3>Top Selling Products</h3>
+                                </div>
+                                <div id="topProductsList" class="top-products-list">
+                                    <!-- Populated via script.js -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- POS Page -->
+                    <div id="posPage" class="page">
+                        <div class="pos-container">
+                            <div class="pos-left">
+                                <h2>Scan Product</h2>
+                                <div class="scan-section">
+                                    <div id="videoContainer" class="video-container-hidden">
+                                        <video id="video" autoplay class="scan-video"></video>
+                                        <button onclick="closeScanCamera()" class="btn btn-danger">Close Camera</button>
+                                    </div>
+                                    <button id="scanBtn" onclick="showScanCamera()" class="btn btn-primary scan-btn">📷
+                                        Open Camera</button>
+                                    <div id="scanResult" class="scan-result scan-result-hidden">
+                                        <p><strong>Scanned Item:</strong> <span id="scannedItem">-</span></p>
+                                        <p><strong>Quantity:</strong> <span id="scannedQty">1</span></p>
+                                        <input type="number" id="quickQty" min="1" value="1" placeholder="Qty"
+                                            class="quick-qty-input">
+                                        <button onclick="confirmScannedItem()" class="btn btn-success">✓ Add to
+                                            Cart</button>
+                                        <button onclick="declineScannedItem()" class="btn btn-danger">✗ Decline</button>
+                                    </div>
+                                    <div id="scannerStatus" class="scanner-status">Ready to scan</div>
+                                </div>
+
+                                <h2 class="section-heading">Or Search Product</h2>
+                                <input type="text" id="productSearch" placeholder="Search by name, barcode, or SKU..."
+                                    class="input-field input-full-width">
+                                <div id="searchResults" class="search-results search-results-margin"></div>
+
+                                <div id="productList" class="product-list product-list-margin"></div>
+                            </div>
+
+                            <div class="pos-right">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Page -->
+                    <div id="inventoryPage" class="page">
+                        <div class="page-header-pro">
+                            <div class="header-title-group">
+                                <h2>📦 Inventory Management</h2>
+                                <p>Control and track your products, stock levels, and suppliers.</p>
+                            </div>
+                            <div class="header-actions-group">
+                                <button onclick="showAddProductForm()" class="btn btn-success-pro">➕ Add New
+                                    Product</button>
+                                <button onclick="showInventorySheetModal()" class="btn btn-primary-pro">📋 Import
+                                    Sheet</button>
+                            </div>
+                        </div>
+
+                        <div class="inventory-dashboard-new">
+                            <div class="inventory-main-content">
+                                <!-- Top Search Bar (Quick Scan style) -->
+                                <div class="quick-scan-container">
+                                    <div class="search-input-wrapper">
+                                        <span class="search-icon">🔍</span>
+                                        <input type="text" id="inventorySearch"
+                                            placeholder="Quick scan barcode or enter product name/SKU..."
+                                            oninput="filterInventory()">
+                                        <button onclick="filterInventory()" class="btn-search-trigger">Find
+                                            Product</button>
+                                    </div>
+                                </div>
+                                <!-- Stats Row -->
+                                <div class="inventory-stats-row">
+                                    <div class="stat-box-pro blue">
+                                        <div class="stat-box-icon">📦</div>
+                                        <div class="stat-box-data">
+                                            <span class="stat-box-label">All Products</span>
+                                            <span class="stat-box-value" id="inventoryTotalCount">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-box-pro orange">
+                                        <div class="stat-box-icon">⚠️</div>
+                                        <div class="stat-box-data">
+                                            <span class="stat-box-label">Low Stock</span>
+                                            <span class="stat-box-value" id="inventoryLowStockCount">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-box-pro red">
+                                        <div class="stat-box-icon">❌</div>
+                                        <div class="stat-box-data">
+                                            <span class="stat-box-label">Out of Stock</span>
+                                            <span class="stat-box-value" id="inventoryOutOfStockCount">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-box-pro green">
+                                        <div class="stat-box-icon">💰</div>
+                                        <div class="stat-box-data">
+                                            <span class="stat-box-label">Inventory Value</span>
+                                            <span class="stat-box-value" id="inventoryTotalValue">₨ 0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Filter/Action Row -->
+                                <div class="table-utility-bar">
+                                    <div class="filter-group">
+                                        <button class="filter-tab active" onclick="setInventoryFilter('all')">All
+                                            Products</button>
+                                        <button class="filter-tab" onclick="setInventoryFilter('low')">Low
+                                            Stock</button>
+                                        <button class="filter-tab" onclick="setInventoryFilter('out')">Out of
+                                            Stock</button>
+                                    </div>
+                                    <div class="utility-actions">
+                                        <select id="inventoryCategoryFilter" onchange="filterInventory()"
+                                            class="select-pro">
+                                            <option value="">All Categories</option>
+                                        </select>
+                                        <button onclick="exportToCSV()" class="btn-icon-export" title="Export to CSV">📥
+                                            Export</button>
+                                    </div>
+                                </div>
+
+                                <div class="inventory-table-container">
+                                    <table id="inventoryTable" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Barcode/SKU</th>
+                                                <th>Category</th>
+                                                <th>Price</th>
+                                                <th>Stock</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="inventoryTableBody">
+                                            <!-- Populated via script.js -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============= MODALS ============= -->
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('paymentModal')">&times;</span>
+            <h2>💰 Payment</h2>
+            <form onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label>Payment Method:</label>
+                    <select id="paymentMethod" required aria-label="Payment Method">
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="mobile">Mobile Transfer</option>
+                        <option value="check">Check</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount to Pay:</label>
+                    <input type="text" id="amountToPay" readonly aria-label="Amount to Pay">
+                </div>
+
+                <div class="form-group">
+                    <label>Received Amount:</label>
+                    <input type="number" id="receivedAmount" step="0.01" onchange="calculateChange()" required
+                        aria-label="Received Amount">
+                </div>
+
+                <div class="form-group">
+                    <label>Change:</label>
+                    <input type="text" id="changeAmount" readonly aria-label="Change Amount">
+                </div>
+
+                <div class="form-group">
+                    <label>Notes:</label>
+                    <textarea id="transactionNotes" placeholder="Add order notes..." rows="3"
+                        aria-label="Transaction Notes"></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">✓ Complete Payment</button>
+                    <button type="button" onclick="closeModal('paymentModal')" class="btn btn-danger">✗ Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customers Page -->
+    <div id="customersPage" class="page">
+        <div class="page-header-pro">
+            <div class="header-left">
+                <h1>Customer Management</h1>
+                <p>View and manage your customer database</p>
+            </div>
+            <button onclick="alert('Customer adding logic coming soon!')" class="btn btn-primary-pro">➕ Add
+                Customer</button>
+        </div>
+        <div class="inventory-dashboard" style="margin-top: 20px;">
+            <div class="inventory-table-container">
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Total Purchases</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding: 40px; color: #64748b;">
+                                <div style="font-size: 40px; margin-bottom: 10px;">👥</div>
+                                Customer data initialization...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settingsPage" class="page">
+        <div class="page-header-pro">
+            <div class="header-left">
+                <h1>Profile & Store Settings</h1>
+                <p>Configure your POS system and store details</p>
+            </div>
+            <button onclick="savePOSSettings(event)" class="btn btn-success-pro">💾 Save All Changes</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Store Settings</h3>
+                </div>
+                <div class="settings-form-pro">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Store Name</label>
+                            <input type="text" id="settingStoreName" class="input-field" placeholder="Al Dar Al Arabi">
+                        </div>
+                        <div class="form-group">
+                            <label>POS Name</label>
+                            <input type="text" id="settingPosName" class="input-field" placeholder="Terminal 1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Store Address</label>
+                        <input type="text" id="settingStoreAddress" class="input-field">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Store Phone</label>
+                            <input type="text" id="settingStorePhone" class="input-field">
+                        </div>
+                        <div class="form-group">
+                            <label>TRN Number</label>
+                            <input type="text" id="settingStoreTRN" class="input-field" placeholder="100xxxxxxxxxxxx">
+                        </div>
+                    </div>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+                    <div class="form-group">
+                        <label>Currency Symbol</label>
+                        <input type="text" id="settingCurrency" class="input-field" value="₨">
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>System Maintenance</h3>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <button onclick="resetPOSSystem()" class="btn-pro-secondary"
+                        style="color: var(--danger-color); border-color: var(--danger-color);">⚠️ Reset All
+                        Data</button>
+                    <button onclick="exportToCSV()" class="btn-pro-secondary">📥 Export Database (CSV)</button>
+                    <button onclick="showInventorySheetModal()" class="btn-pro-secondary">📤 Import Database</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Modal -->
+    <div id="reportsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('reportsModal')">&times;</span>
+            <h2>📊 Reports</h2>
+            <div class="form-group">
+                <label>Report Type:</label>
+                <select id="reportType" onchange="generateReport()" aria-label="Report Type">
+                    <option value="daily">Daily Sales</option>
+                    <option value="weekly">Weekly Sales</option>
+                    <option value="monthly">Monthly Sales</option>
+                    <option value="category">Sales by Category</option>
+                    <option value="payment">Payment Methods</option>
+                </select>
+            </div>
+            <div id="reportContent" class="report-content"></div>
+            <button onclick="printReport()" class="btn btn-info print-btn">🖨️ Print</button>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" onclick="closeModal('historyModal')">&times;</span>
+            <h2>📜 Transaction History</h2>
+            <div class="history-filters">
+                <input type="date" id="historyDate" onchange="loadTransactionHistory()" aria-label="Filter by Date">
+                <button onclick="clearHistoryFilter()" class="btn btn-secondary">Clear</button>
+            </div>
+            <table id="historyTable" class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date & Time</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Cashier</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Backend Config Modal -->
+    <div id="backendConfigModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('backendConfigModal')">&times;</span>
+            <h2>⚙️ Backend Configuration</h2>
+            <form onsubmit="saveBackendConfig(event)">
+                <div class="form-group">
+                    <label>Backend Server URL:</label>
+                    <input type="text" id="backendUrl" placeholder="http://localhost:5000" class="input-field"
+                        aria-label="Backend Server URL">
+                </div>
+                <div class="form-group">
+                    <label>API Endpoint:</label>
+                    <input type="text" id="apiEndpoint" placeholder="/api/inventory" class="input-field"
+                        aria-label="API Endpoint">
+                </div>
+                <div class="form-group">
+                    <label>Auto-sync Interval (minutes):</label>
+                    <input type="number" id="syncInterval" value="5" min="1" class="input-field"
+                        aria-label="Auto-sync Interval">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">💾 Save</button>
+                    <button type="button" onclick="testBackendConnection()" class="btn btn-info">🔗 Test</button>
+                    <button type="button" onclick="closeModal('backendConfigModal')" class="btn btn-danger">✗
+                        Cancel</button>
+                </div>
+            </form>
+            <div id="backendStatus" class="backend-status"></div>
+        </div>
+    </div>
+
+    <!-- POS Settings Modal -->
+    <div id="posSettingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('posSettingsModal')">&times;</span>
+            <h2>🛠️ POS Settings</h2>
+            <form onsubmit="savePOSSettings(event)">
+                <div class="form-group">
+                    <label>POS Name:</label>
+                    <input type="text" id="posName" class="input-field" placeholder="POS System" aria-label="POS Name">
+                </div>
+                <div class="form-group">
+                    <label>Store Name:</label>
+                    <input type="text" id="storeName" class="input-field" placeholder="Store Name"
+                        aria-label="Store Name">
+                </div>
+                <div class="form-group">
+                    <label>Address:</label>
+                    <input type="text" id="storeAddress" class="input-field" placeholder="Address"
+                        aria-label="Store Address">
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="text" id="storePhone" class="input-field" placeholder="Phone" aria-label="Store Phone">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">💾 Save</button>
+                    <button type="button" onclick="resetPOSSystem()" class="btn btn-danger">🔄 Reset POS</button>
+                    <button type="button" onclick="closeModal('posSettingsModal')" class="btn btn-secondary">✗
+                        Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inventory Sheet Modal -->
+    <div id="inventorySheetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('inventorySheetModal')">&times;</span>
+            <h2>📋 Upload Inventory Sheet</h2>
+            <div class="form-group">
+                <label>Upload Excel/CSV File:</label>
+                <input type="file" id="sheetFile" accept=".xlsx,.xls,.xlsm,.xlsb,.csv" class="input-field"
+                    aria-label="Upload Excel or CSV File">
+            </div>
+            <div id="sheetPreview" class="sheet-preview"></div>
+            <div class="form-buttons">
+                <button onclick="validateAndUploadSheet()" class="btn btn-success">✓ Upload & Verify</button>
+                <button onclick="closeModal('inventorySheetModal')" class="btn btn-danger">✗ Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Form Modal (Full Add/Edit) -->
+    <div id="productFormModal" class="modal">
+        <div class="modal-content modal-medium">
+            <span class="close" onclick="closeProductForm()">&times;</span>
+            <h2 id="formTitle">➕ Add Product</h2>
+            <form onsubmit="saveProduct(event)" id="productForm">
+                <input type="hidden" id="editProductId" value="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Name:</label>
+                        <input type="text" id="productName" required class="input-field" aria-label="Product Name">
+                    </div>
+                    <div class="form-group">
+                        <label>SKU:</label>
+                        <input type="text" id="productSKU" class="input-field" aria-label="Product SKU">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Barcode:</label>
+                        <input type="text" id="productBarcode" class="input-field" aria-label="Product Barcode">
+                    </div>
+                    <div class="form-group">
+                        <label>Category:</label>
+                        <select id="productCategory" required class="input-field" aria-label="Product Category">
+                            <option value="">-- Select Category --</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Food">Food</option>
+                            <option value="Books">Books</option>
+                            <option value="Home">Home</option>
+                            <option value="Beauty">Beauty</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₨):</label>
+                        <input type="number" id="productPrice" step="0.01" required class="input-field"
+                            aria-label="Product Price">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Quantity:</label>
+                        <input type="number" id="productStock" required class="input-field" aria-label="Stock Quantity">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Minimum Stock:</label>
+                        <input type="number" id="minStock" value="10" class="input-field"
+                            aria-label="Minimum Stock Level">
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier:</label>
+                        <input type="text" id="supplier" class="input-field" aria-label="Supplier Name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="productDescription" rows="3" class="input-field"
+                        aria-label="Product Description"></textarea>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Icon (Emoji):</label>
+                    <input type="text" id="productIcon" value="📦" class="input-field" aria-label="Product Icon">
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">✓ Save</button>
+                    <button type="button" onclick="closeProductForm()" class="btn btn-danger">✗ Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Add Modal -->
+    <div id="quickAddModal" class="modal">
+        <div class="modal-content modal-small">
+            <span class="close" onclick="closeQuickAddForm()">&times;</span>
+            <h2>⚡ Quick Add Product</h2>
+            <form onsubmit="saveQuickProduct(event)">
+                <div class="form-group">
+                    <label>Product Name:</label>
+                    <input type="text" id="quickProductName" required class="input-field" aria-label="Product Name">
+                </div>
+                <div class="form-group">
+                    <label>Price (₨):</label>
+                    <input type="number" id="quickProductPrice" step="0.01" required class="input-field"
+                        aria-label="Product Price">
+                </div>
+                <div class="form-group">
+                    <label>Stock:</label>
+                    <input type="number" id="quickProductStock" required class="input-field"
+                        aria-label="Stock Quantity">
+                </div>
+                <div class="form-group">
+                    <label>Category:</label>
+                    <select id="quickProductCategory" required class="input-field" aria-label="Product Category">
+                        <option value="">-- Select Category --</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Food">Food</option>
+                        <option value="Books">Books</option>
+                        <option value="Home">Home</option>
+                        <option value="Beauty">Beauty</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">✓ Add</button>
+                    <button type="button" onclick="closeQuickAddForm()" class="btn btn-danger">✗ Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize hardware scanner on load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔴 Hardware Barcode Scanner Active');
+            console.log('💡 Point scanner at barcode and press trigger button');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AL DAR AL ARABI POS</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="db.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent),
+                radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.05), transparent);
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 48px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 440px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+            position: relative;
+        }
+
+        .login-logo::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--primary), transparent);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .login-header h1 {
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.025em;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle button {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .password-toggle button:hover {
+            color: var(--primary);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1.5px solid #cbd5e1;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        .demo-users {
+            margin-top: 32px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 16px;
+        }
+
+        .demo-users h4 {
+            color: var(--text-main);
+            margin: 0 0 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .user-btn-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .user-btn {
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            padding: 10px 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .user-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .error-message,
+        .success-message {
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 15px;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fee2e2;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #dcfce7;
+        }
+
+        .register-section {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .register-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .register-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .register-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-logo">🛒</div>
+                <h1>AL DAR AL ARABI</h1>
+                <p>Point of Sale System</p>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-toggle">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" onclick="togglePassword()">👁️</button>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <label>
+                        <input type="checkbox" id="remember"> Remember me
+                    </label>
+                    <a href="#" onclick="alert('Contact admin for password reset')">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn">🔐 Login</button>
+            </form>
+
+            <div class="demo-users">
+                <h4>📝 Demo Users</h4>
+                <div class="user-btn-container">
+                    <button type="button" class="user-btn" onclick="fillUser('admin', 'admin123')">Admin</button>
+                    <button type="button" class="user-btn" onclick="fillUser('cashier', 'cashier123')">Cashier</button>
+                    <button type="button" class="user-btn" onclick="fillUser('manager', 'manager123')">Manager</button>
+                </div>
+            </div>
+
+            <div class="register-section">
+                <p class="register-text">Don't have an account?</p>
+                <a href="register.html" class="register-link">
+                    <span>📝</span>
+                    Create New Account
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const existingSession = sessionStorage.getItem('userSession');
+        if (existingSession) {
+            window.location.href = 'index.html';
+        }
+
+        // Initialize database
+        let dbReady = false;
+        initDB().then(() => {
+            dbReady = true;
+            console.log('Database ready for login');
+        }).catch(err => {
+            console.error('DB init failed, using demo users only:', err);
+            dbReady = false;
+        });
+
+        // Demo user database (fallback)
+        const users = {
+            admin: {
+                password: 'admin123',
+                role: 'admin',
+                name: 'Admin User',
+                permissions: ['all']
+            },
+            cashier: {
+                password: 'cashier123',
+                role: 'cashier',
+                name: 'Cashier User',
+                permissions: ['sales', 'view_products']
+            },
+            manager: {
+                password: 'manager123',
+                role: 'manager',
+                name: 'Manager User',
+                permissions: ['sales', 'reports', 'manage_products']
+            }
+        };
+
+        // Load remember me
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () {
+                loadRememberMe();
+                attachLoginFormListener();
+            });
+        } else {
+            loadRememberMe();
+            attachLoginFormListener();
+        }
+
+        function loadRememberMe() {
+            const savedUsername = localStorage.getItem('rememberedUser');
+            if (savedUsername) {
+                const usernameField = document.getElementById('username');
+                const rememberCheckbox = document.getElementById('remember');
+                if (usernameField) usernameField.value = savedUsername;
+                if (rememberCheckbox) rememberCheckbox.checked = true;
+            }
+        }
+
+        function attachLoginFormListener() {
+            const form = document.getElementById('loginForm');
+            if (!form) return;
+
+            form.addEventListener('submit', handleLoginSubmit);
+        }
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            if (!username || !password) {
+                showMessage('error', 'Please enter username and password!');
+                return;
+            }
+
+            // Check demo users first
+            if (users[username] && users[username].password === password) {
+                sessionStorage.setItem('userSession', JSON.stringify({
+                    username: username,
+                    role: users[username].role,
+                    name: users[username].name,
+                    permissions: users[username].permissions,
+                    loginTime: new Date().toISOString()
+                }));
+
+                if (remember) localStorage.setItem('rememberedUser', username);
+                else localStorage.removeItem('rememberedUser');
+
+                showMessage('success', 'Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 800);
+                return;
+            }
+
+            // Check registered users from database
+            if (dbReady) {
+                try {
+                    const registeredUser = await getUserByUsername(username);
+                    if (registeredUser && registeredUser.password === password && registeredUser.isActive) {
+                        sessionStorage.setItem('userSession', JSON.stringify({
+                            id: registeredUser.id,
+                            username: registeredUser.username,
+                            role: registeredUser.role,
+                            name: registeredUser.name,
+                            email: registeredUser.email,
+                            permissions: registeredUser.permissions,
+                            loginTime: new Date().toISOString()
+                        }));
+
+                        if (remember) localStorage.setItem('rememberedUser', username);
+                        else localStorage.removeItem('rememberedUser');
+
+                        showMessage('success', 'Login successful! Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 800);
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Database lookup error:', err);
+                }
+            }
+
+            // Try server if offline credentials don't match
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('Server error');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        sessionStorage.setItem('userSession', JSON.stringify({
+                            id: data.user.id,
+                            username: data.user.username,
+                            name: data.user.name,
+                            role: data.user.role,
+                            email: data.user.email,
+                            permissions: data.user.permissions,
+                            loginTime: new Date().toISOString()
+                        }));
+
+                        if (remember) localStorage.setItem('rememberedUser', username);
+                        else localStorage.removeItem('rememberedUser');
+
+                        showMessage('success', 'Login successful! Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    } else {
+                        showMessage('error', 'Invalid credentials');
+                    }
+                })
+                .catch(err => {
+                    // Server not available, credentials already checked above
+                    showMessage('error', 'Invalid credentials');
+                });
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+        }
+
+        function fillUser(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            document.getElementById('username').focus();
+        }
+
+        function showMessage(type, message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+                setTimeout(() => errorDiv.style.display = 'none', 5000);
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

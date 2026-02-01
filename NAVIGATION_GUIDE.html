@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - Complete Navigation Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
+
+        .page-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #2563eb;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .page-number {
+            background: #2563eb;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .page-title {
+            flex: 1;
+        }
+
+        .page-title h2 {
+            color: #1e293b;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .page-url {
+            color: #2563eb;
+            font-size: 14px;
+            font-family: monospace;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .button-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .button-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        .button-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .button-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .button-action {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            font-size: 30px;
+            color: #2563eb;
+            margin: 20px 0;
+        }
+
+        .user-roles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .role-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .role-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .role-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .role-creds {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .role-access {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .quick-links {
+            background: #eff6ff;
+            border: 2px solid #2563eb;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quick-links h3 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .link-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .link-btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .sequence-number {
+            background: #10b981;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .page-description {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #10b981;
+        }
+
+        @media (max-width: 768px) {
+            .user-roles {
+                grid-template-columns: 1fr;
+            }
+
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section headings */
+        .section-heading {
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .subsection-heading {
+            color: #1e293b;
+            margin: 20px 0 15px;
+        }
+
+        .subsection-heading-top {
+            color: #1e293b;
+            margin: 30px 0 15px;
+        }
+
+        /* Summary section */
+        .summary-section {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .summary-section h2 {
+            margin-bottom: 15px;
+        }
+
+        .summary-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .summary-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .link-btn-white {
+            background: white;
+            color: #10b981;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🛒 AL DAR AL ARABI POS System</h1>
+        <p class="subtitle">Complete Navigation Guide - All Pages & Buttons</p>
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <h3>🚀 Quick Access Links</h3>
+            <div class="link-buttons">
+                <a href="start.html" class="link-btn" target="_blank">🏠 Welcome Page</a>
+                <a href="login.html" class="link-btn" target="_blank">🔐 Login</a>
+                <a href="register.html" class="link-btn" target="_blank">📝 Register</a>
+                <a href="index.html" class="link-btn" target="_blank">🛒 POS</a>
+                <a href="dashboard.html" class="link-btn" target="_blank">📊 Dashboard</a>
+                <a href="inventory.html" class="link-btn" target="_blank">📦 Inventory</a>
+            </div>
+        </div>
+
+        <!-- User Roles -->
+        <h2 class="section-heading">👥 Demo User Accounts</h2>
+        <div class="user-roles">
+            <div class="role-card">
+                <div class="role-icon">👨‍💼</div>
+                <div class="role-name">Admin</div>
+                <div class="role-creds">Username: admin<br>Password: admin123</div>
+                <div class="role-access">✅ Full System Access</div>
+            </div>
+            <div class="role-card">
+                <div class="role-icon">👔</div>
+                <div class="role-name">Manager</div>
+                <div class="role-creds">Username: manager<br>Password: manager123</div>
+                <div class="role-access">✅ Dashboard & Reports</div>
+            </div>
+            <div class="role-card">
+                <div class="role-icon">👤</div>
+                <div class="role-name">Cashier</div>
+                <div class="role-creds">Username: cashier<br>Password: cashier123</div>
+                <div class="role-access">✅ POS Only</div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️ System Flow ⬇️</div>
+
+        <!-- Page 1: Start/Welcome -->
+        <div class="page-section">
+            <div class="page-header">
+                <div class="page-number">1</div>
+                <div class="page-title">
+                    <h2>🏠 Welcome Page (Start)</h2>
+                    <span class="page-url">http://localhost:3000/start.html</span>
+                </div>
+            </div>
+            <div class="page-description">
+                <strong>Purpose:</strong> Professional landing page showing system overview and navigation to
+                login/register
+            </div>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">🔐</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Login to System</div>
+                    <div class="button-action">Main button - Opens login page for existing users</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📝</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Create New Account</div>
+                    <div class="button-action">Secondary button - Opens registration page for new users</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- Page 2: Login -->
+        <div class="page-section">
+            <div class="page-header">
+                <div class="page-number">2</div>
+                <div class="page-title">
+                    <h2>🔐 Login Page</h2>
+                    <span class="page-url">http://localhost:3000/login.html</span>
+                </div>
+            </div>
+            <div class="page-description">
+                <strong>Purpose:</strong> User authentication - Enter credentials to access the system
+            </div>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">👁️</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Show/Hide Password</div>
+                    <div class="button-action">Toggle button in password field - Shows/hides password text</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">👨‍💼</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Admin Demo Button</div>
+                    <div class="button-action">Quick fill - Auto-fills admin/admin123 credentials</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">👔</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Manager Demo Button</div>
+                    <div class="button-action">Quick fill - Auto-fills manager/manager123 credentials</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">👤</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Cashier Demo Button</div>
+                    <div class="button-action">Quick fill - Auto-fills cashier/cashier123 credentials</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🔐</div>
+                    <div class="button-name"><span class="sequence-number">5</span>Login Submit Button</div>
+                    <div class="button-action">Main action - Validates and logs user into system</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📝</div>
+                    <div class="button-name"><span class="sequence-number">6</span>Create Account Link</div>
+                    <div class="button-action">Bottom link - Navigates to registration page</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️ After Login ⬇️</div>
+
+        <!-- Page 3: Dashboard (Admin/Manager) -->
+        <div class="page-section">
+            <div class="page-header">
+                <div class="page-number">3</div>
+                <div class="page-title">
+                    <h2>📊 Dashboard (Admin/Manager Only)</h2>
+                    <span class="page-url">http://localhost:3000/dashboard.html</span>
+                </div>
+            </div>
+            <div class="page-description">
+                <strong>Purpose:</strong> Admin control panel with analytics, reports, and management tools
+            </div>
+            <h3 class="subsection-heading">Sidebar Navigation Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">📊</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Overview</div>
+                    <div class="button-action">Shows sales summary, today's stats, and charts</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💰</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Sales</div>
+                    <div class="button-action">Sales analysis and transaction history</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📦</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Products</div>
+                    <div class="button-action">Product inventory management</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">👥</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Customers</div>
+                    <div class="button-action">Customer information and analytics</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📈</div>
+                    <div class="button-name"><span class="sequence-number">5</span>Reports</div>
+                    <div class="button-action">Generate sales reports and analytics</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🏢</div>
+                    <div class="button-name"><span class="sequence-number">6</span>Company Profile</div>
+                    <div class="button-action">Edit company information and settings</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🛒</div>
+                    <div class="button-name"><span class="sequence-number">7</span>Go to POS</div>
+                    <div class="button-action">Navigate to main POS page for sales</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🚪</div>
+                    <div class="button-name"><span class="sequence-number">8</span>Logout</div>
+                    <div class="button-action">Exit dashboard and return to login</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️ OR ⬇️</div>
+
+        <!-- Page 4: POS Main -->
+        <div class="page-section">
+            <div class="page-header">
+                <div class="page-number">4</div>
+                <div class="page-title">
+                    <h2>🛒 POS Main Page (All Users)</h2>
+                    <span class="page-url">http://localhost:3000/index.html</span>
+                </div>
+            </div>
+            <div class="page-description">
+                <strong>Purpose:</strong> Point of Sale - Main sales interface for product scanning and checkout
+            </div>
+
+            <h3 class="subsection-heading">Left Sidebar Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">🛒</div>
+                    <div class="button-name"><span class="sequence-number">1</span>POS</div>
+                    <div class="button-action">Main POS page (active by default)</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📊</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Inventory</div>
+                    <div class="button-action">Opens inventory management page</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📈</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Dashboard</div>
+                    <div class="button-action">Opens admin dashboard (admin/manager only)</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📷</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Scan</div>
+                    <div class="button-action">Opens camera for barcode/QR scanning</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">➕</div>
+                    <div class="button-name"><span class="sequence-number">5</span>Add Product</div>
+                    <div class="button-action">Opens form to add new product</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">⚡</div>
+                    <div class="button-name"><span class="sequence-number">6</span>Quick Add</div>
+                    <div class="button-action">Fast add product with minimal details</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📋</div>
+                    <div class="button-name"><span class="sequence-number">7</span>Upload Sheet</div>
+                    <div class="button-action">Import inventory from Google Sheets</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📁</div>
+                    <div class="button-name"><span class="sequence-number">8</span>Import CSV</div>
+                    <div class="button-action">Import products from CSV file</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💾</div>
+                    <div class="button-name"><span class="sequence-number">9</span>Export CSV</div>
+                    <div class="button-action">Export inventory to CSV file</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">⚙️</div>
+                    <div class="button-name"><span class="sequence-number">10</span>Backend Config</div>
+                    <div class="button-action">Configure Google Sheets connection</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-heading-top">Scanning Section Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">📷</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Open Camera</div>
+                    <div class="button-action">Activates webcam for scanning barcodes/QR codes</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">❌</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Close Camera</div>
+                    <div class="button-action">Stops camera and hides video feed</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">✓</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Add to Cart</div>
+                    <div class="button-action">Confirms scanned item and adds to shopping cart</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">✗</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Decline</div>
+                    <div class="button-action">Rejects scanned item and continues scanning</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-heading-top">Category Filter Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">📋</div>
+                    <div class="button-name"><span class="sequence-number">1</span>All</div>
+                    <div class="button-action">Shows all products (default active)</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💻</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Electronics</div>
+                    <div class="button-action">Filters to electronics category</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">👕</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Clothing</div>
+                    <div class="button-action">Filters to clothing category</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🍔</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Food</div>
+                    <div class="button-action">Filters to food & beverages</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📚</div>
+                    <div class="button-name"><span class="sequence-number">5</span>Books</div>
+                    <div class="button-action">Filters to books & media</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🏠</div>
+                    <div class="button-name"><span class="sequence-number">6</span>Home</div>
+                    <div class="button-action">Filters to home & furniture</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💄</div>
+                    <div class="button-name"><span class="sequence-number">7</span>Beauty</div>
+                    <div class="button-action">Filters to beauty & cosmetics</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">⚽</div>
+                    <div class="button-name"><span class="sequence-number">8</span>Sports</div>
+                    <div class="button-action">Filters to sports & fitness</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-heading-top">Shopping Cart Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">🗑️</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Remove Item</div>
+                    <div class="button-action">Deletes item from cart</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🧹</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Clear Cart</div>
+                    <div class="button-action">Removes all items from cart</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💰</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Checkout</div>
+                    <div class="button-action">Opens payment modal to complete purchase</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-heading-top">Checkout Modal Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">💵</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Cash Payment</div>
+                    <div class="button-action">Select cash as payment method</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💳</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Card Payment</div>
+                    <div class="button-action">Select credit/debit card payment</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📱</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Mobile Payment</div>
+                    <div class="button-action">Select mobile wallet payment</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🧾</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Check Payment</div>
+                    <div class="button-action">Select check/cheque payment</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">✅</div>
+                    <div class="button-name"><span class="sequence-number">5</span>Complete Sale</div>
+                    <div class="button-action">Finalizes transaction and saves to database</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🖨️</div>
+                    <div class="button-name"><span class="sequence-number">6</span>Print Receipt</div>
+                    <div class="button-action">Generates and prints sales receipt</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-heading-top">Top Header Buttons:</h3>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">📊</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Reports</div>
+                    <div class="button-action">Opens sales reports modal</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📜</div>
+                    <div class="button-name"><span class="sequence-number">2</span>History</div>
+                    <div class="button-action">Shows transaction history</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🚪</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Logout</div>
+                    <div class="button-action">Exits system and returns to login</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- Page 5: Inventory -->
+        <div class="page-section">
+            <div class="page-header">
+                <div class="page-number">5</div>
+                <div class="page-title">
+                    <h2>📦 Inventory Management Page</h2>
+                    <span class="page-url">http://localhost:3000/inventory.html</span>
+                </div>
+            </div>
+            <div class="page-description">
+                <strong>Purpose:</strong> Manage product inventory, stock levels, and quick updates
+            </div>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">➕</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Increase Stock (+)</div>
+                    <div class="button-action">Add 1 unit to product stock</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">➖</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Decrease Stock (-)</div>
+                    <div class="button-action">Remove 1 unit from product stock</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">✏️</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Edit Product</div>
+                    <div class="button-action">Opens edit form for product details</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🗑️</div>
+                    <div class="button-name"><span class="sequence-number">4</span>Delete Product</div>
+                    <div class="button-action">Removes product from inventory</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">💾</div>
+                    <div class="button-name"><span class="sequence-number">5</span>Export CSV</div>
+                    <div class="button-action">Download inventory as CSV file</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">📁</div>
+                    <div class="button-name"><span class="sequence-number">6</span>Import CSV</div>
+                    <div class="button-action">Upload CSV to update inventory</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🔙</div>
+                    <div class="button-name"><span class="sequence-number">7</span>Back to POS</div>
+                    <div class="button-action">Returns to main POS page</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- Page 6: Register -->
+        <div class="page-section">
+            <div class="page-header">
+                <div class="page-number">6</div>
+                <div class="page-title">
+                    <h2>📝 Registration Page</h2>
+                    <span class="page-url">http://localhost:3000/register.html</span>
+                </div>
+            </div>
+            <div class="page-description">
+                <strong>Purpose:</strong> Create new user accounts with role assignment
+            </div>
+            <div class="button-grid">
+                <div class="button-card">
+                    <div class="button-icon">👁️</div>
+                    <div class="button-name"><span class="sequence-number">1</span>Show/Hide Password</div>
+                    <div class="button-action">Toggle password visibility (2 buttons: password & confirm)</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">✓</div>
+                    <div class="button-name"><span class="sequence-number">2</span>Create Account</div>
+                    <div class="button-action">Submits form and creates new user account</div>
+                </div>
+                <div class="button-card">
+                    <div class="button-icon">🔙</div>
+                    <div class="button-name"><span class="sequence-number">3</span>Login Here Link</div>
+                    <div class="button-action">Returns to login page for existing users</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <h2>✅ System Complete!</h2>
+            <p class="summary-text">6 Pages • 60+ Functional Buttons • Professional Navigation
+            </p>
+            <div class="summary-links">
+                <a href="start.html" class="link-btn link-btn-white">Start Using System</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
