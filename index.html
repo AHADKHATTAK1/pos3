@@ -211,7 +211,7 @@
                                     </div>
                                     <div class="utility-actions">
                                         <select id="inventoryCategoryFilter" onchange="filterInventory()"
-                                            class="select-pro">
+                                            class="select-pro" aria-label="Filter by category">
                                             <option value="">All Categories</option>
                                         </select>
                                         <button onclick="exportToCSV()" class="btn-icon-export" title="Export to CSV">📥
@@ -304,7 +304,7 @@
             <button onclick="alert('Customer adding logic coming soon!')" class="btn btn-primary-pro">➕ Add
                 Customer</button>
         </div>
-        <div class="inventory-dashboard" style="margin-top: 20px;">
+        <div class="inventory-dashboard">
             <div class="inventory-table-container">
                 <table class="inventory-table">
                     <thead>
@@ -319,8 +319,8 @@
                     </thead>
                     <tbody id="customersTableBody">
                         <tr>
-                            <td colspan="6" style="text-align:center; padding: 40px; color: #64748b;">
-                                <div style="font-size: 40px; margin-bottom: 10px;">👥</div>
+                            <td colspan="6" class="table-empty-cell">
+                                <div class="empty-icon">👥</div>
                                 Customer data initialization...
                             </td>
                         </tr>
@@ -348,32 +348,36 @@
                 <div class="settings-form-pro">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Store Name</label>
-                            <input type="text" id="settingStoreName" class="input-field" placeholder="Al Dar Al Arabi">
+                            <label for="settingStoreName">Store Name</label>
+                            <input type="text" id="settingStoreName" class="input-field" placeholder="Al Dar Al Arabi"
+                                aria-label="Store Name">
                         </div>
                         <div class="form-group">
-                            <label>POS Name</label>
-                            <input type="text" id="settingPosName" class="input-field" placeholder="Terminal 1">
+                            <label for="settingPosName">POS Name</label>
+                            <input type="text" id="settingPosName" class="input-field" placeholder="Terminal 1"
+                                aria-label="POS Name">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Store Address</label>
-                        <input type="text" id="settingStoreAddress" class="input-field">
+                        <label for="settingStoreAddress">Store Address</label>
+                        <input type="text" id="settingStoreAddress" class="input-field" aria-label="Store Address">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Store Phone</label>
-                            <input type="text" id="settingStorePhone" class="input-field">
+                            <label for="settingStorePhone">Store Phone</label>
+                            <input type="text" id="settingStorePhone" class="input-field" aria-label="Store Phone">
                         </div>
                         <div class="form-group">
-                            <label>TRN Number</label>
-                            <input type="text" id="settingStoreTRN" class="input-field" placeholder="100xxxxxxxxxxxx">
+                            <label for="settingStoreTRN">TRN Number</label>
+                            <input type="text" id="settingStoreTRN" class="input-field" placeholder="100xxxxxxxxxxxx"
+                                aria-label="TRN Number">
                         </div>
                     </div>
-                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+                    <hr class="section-divider">
                     <div class="form-group">
-                        <label>Currency Symbol</label>
-                        <input type="text" id="settingCurrency" class="input-field" value="₨">
+                        <label for="settingCurrency">Currency Symbol</label>
+                        <input type="text" id="settingCurrency" class="input-field" value="₨"
+                            aria-label="Currency Symbol">
                     </div>
                 </div>
             </div>
@@ -382,9 +386,8 @@
                 <div class="chart-header">
                     <h3>System Maintenance</h3>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <button onclick="resetPOSSystem()" class="btn-pro-secondary"
-                        style="color: var(--danger-color); border-color: var(--danger-color);">⚠️ Reset All
+                <div class="settings-actions">
+                    <button onclick="resetPOSSystem()" class="btn-pro-secondary btn-pro-danger">⚠️ Reset All
                         Data</button>
                     <button onclick="exportToCSV()" class="btn-pro-secondary">📥 Export Database (CSV)</button>
                     <button onclick="showInventorySheetModal()" class="btn-pro-secondary">📤 Import Database</button>
@@ -559,7 +562,7 @@
                         aria-label="Product Description"></textarea>
                 </div>
 
-                <div class="form-group" style="margin-top: 20px;">
+                <div class="form-group form-group-top">
                     <label>Icon (Emoji):</label>
                     <input type="text" id="productIcon" value="📦" class="input-field" aria-label="Product Icon">
                 </div>
