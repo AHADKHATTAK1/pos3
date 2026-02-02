@@ -31,6 +31,7 @@
                 </div>
                 <div class="header-right">
                     <div class="user-profile">
+                        <div id="dateTime" class="header-date"></div>
                         <div class="user-avatar">👤</div>
                         <div class="user-details">
                             <span id="userDisplay" class="user-name">Admin User</span>
@@ -60,15 +61,12 @@
                         <button onclick="showAddProductForm()" class="nav-btn secondary">➕ Add Product</button>
                         <button onclick="showQuickAddForm()" class="nav-btn secondary">⚡ Quick Add</button>
                         <hr>
-                        <h4>Tools</h4>
-                        <button onclick="showInventorySheetModal()" class="nav-btn secondary">📋 Upload Sheet</button>
                         <button onclick="document.getElementById('csvImport').click()" class="nav-btn secondary">📁
                             Import CSV</button>
                         <input type="file" id="csvImport" accept=".csv,.xlsx,.xls,.xlsm,.xlsb"
                             onchange="importInventoryFile(event)" class="file-input-hidden"
                             aria-label="Import CSV File">
                         <button onclick="exportToCSV()" class="nav-btn secondary">💾 Export CSV</button>
-                        <button onclick="showPOSSettings()" class="nav-btn secondary">🛠️ POS Settings</button>
                         <button onclick="showBackendConfig()" class="nav-btn secondary">⚙️ Backend</button>
                     </div>
                 </aside>
@@ -241,6 +239,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                 </section>
             </div>
@@ -471,39 +470,7 @@
         </div>
     </div>
 
-    <!-- POS Settings Modal -->
-    <div id="posSettingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('posSettingsModal')">&times;</span>
-            <h2>🛠️ POS Settings</h2>
-            <form onsubmit="savePOSSettings(event)">
-                <div class="form-group">
-                    <label>POS Name:</label>
-                    <input type="text" id="posName" class="input-field" placeholder="POS System" aria-label="POS Name">
-                </div>
-                <div class="form-group">
-                    <label>Store Name:</label>
-                    <input type="text" id="storeName" class="input-field" placeholder="Store Name"
-                        aria-label="Store Name">
-                </div>
-                <div class="form-group">
-                    <label>Address:</label>
-                    <input type="text" id="storeAddress" class="input-field" placeholder="Address"
-                        aria-label="Store Address">
-                </div>
-                <div class="form-group">
-                    <label>Phone:</label>
-                    <input type="text" id="storePhone" class="input-field" placeholder="Phone" aria-label="Store Phone">
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-success">💾 Save</button>
-                    <button type="button" onclick="resetPOSSystem()" class="btn btn-danger">🔄 Reset POS</button>
-                    <button type="button" onclick="closeModal('posSettingsModal')" class="btn btn-secondary">✗
-                        Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <!-- POS Settings Modal (Replaced by dedicated Settings Page) -->
 
     <!-- Inventory Sheet Modal -->
     <div id="inventorySheetModal" class="modal">
@@ -647,6 +614,7 @@
         </div>
     </div>
 
+    <div id="notificationContainer" class="notification-container"></div>
     <script src="script.js"></script>
     <script>
         // Initialize hardware scanner on load
